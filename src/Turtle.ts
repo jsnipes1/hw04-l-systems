@@ -20,17 +20,44 @@ export default class Turtle {
     }
 
     // Give the drawing rules a parameter that randomly chooses between rotating about x, y, or z
-    // Replace 45 with some random amount
-    rotateX() {
-        vec3.rotateX(this.orient, this.orient, this.position, 45.0);
+    rotateX(deg : number) {
+        vec3.rotateX(this.orient, this.orient, this.position, deg);
     }
 
-    rotateY() {
-        vec3.rotateY(this.orient, this.orient, this.position, 45.0);
+    rotateY(deg : number) {
+        vec3.rotateY(this.orient, this.orient, this.position, deg);
     }
 
-    rotateZ() {
-        vec3.rotateZ(this.orient, this.orient, this.position, 45.0);
+    rotateZ(deg : number) {
+        vec3.rotateZ(this.orient, this.orient, this.position, deg);
+    }
+
+    rotatePos() {
+        let rand : number = Math.random();
+        let angle : number = Math.random() * 135.0;
+        if (rand < 0.33) {
+            this.rotateX(angle);
+        }
+        else if (rand < 0.67) {
+            this.rotateY(angle);
+        }
+        else {
+            this.rotateZ(angle);
+        }
+    }
+
+    rotateNeg() {
+        let rand : number = Math.random();
+        let angle : number = -Math.random() * 135.0;
+        if (rand < 0.33) {
+            this.rotateX(angle);
+        }
+        else if (rand < 0.67) {
+            this.rotateY(angle);
+        }
+        else {
+            this.rotateZ(angle);
+        }
     }
 
     saveState() {

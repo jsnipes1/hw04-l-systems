@@ -4,9 +4,9 @@ export default class ExpansionRule {
     constructor() {
         this.expRule = new Map();
         // this.expRule.set('F', 'FF');
-        // this.expRules.set('F', 'FX');
+        // this.expRule.set('F', 'FX');
         // this.expRule.set('X', '[X+F[+FX]]');
-        // this.expRules.set('X', 'XFX');
+        // this.expRule.set('X', 'XFX');
     }
 
     set(letter : string, expand : string) : boolean {
