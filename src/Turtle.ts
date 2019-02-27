@@ -13,13 +13,18 @@ export default class Turtle {
         this.stack = [];
     }
 
+    // Drawing functions, including probabilistic functionality
     moveForward() {
         // How can we pass an anonymous vector as the third parameter if this syntax is invalid?
         // Scale orientation proportional to the recursion depth
         vec3.add(this.position, this.position, this.orient);
+        // TODO: Draw branch s.t. radius depends on recDepth
     }
 
-    // Give the drawing rules a parameter that randomly chooses between rotating about x, y, or z
+    drawFlower() {
+        // TODO
+    }
+
     rotateX(deg : number) {
         vec3.rotateX(this.orient, this.orient, this.position, deg);
     }
@@ -34,7 +39,7 @@ export default class Turtle {
 
     rotatePos() {
         let rand : number = Math.random();
-        let angle : number = Math.random() * 135.0;
+        let angle : number = Math.random() * 135.0; // TODO: Replace 135 with a dat.GUI input from 20-180
         if (rand < 0.33) {
             this.rotateX(angle);
         }
@@ -48,7 +53,7 @@ export default class Turtle {
 
     rotateNeg() {
         let rand : number = Math.random();
-        let angle : number = -Math.random() * 135.0;
+        let angle : number = -Math.random() * 135.0; // TODO: Link to same input as above
         if (rand < 0.33) {
             this.rotateX(angle);
         }

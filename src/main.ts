@@ -7,6 +7,8 @@ import OpenGLRenderer from './rendering/gl/OpenGLRenderer';
 import Camera from './Camera';
 import {setGL} from './globals';
 import ShaderProgram, {Shader} from './rendering/gl/ShaderProgram';
+import {readTextFile} from './globals'
+import Mesh from './geometry/Mesh'
 
 // Define an object with application parameters and button callbacks
 // This will be referred to by dat.GUI's functions that add GUI elements.
@@ -15,13 +17,23 @@ const controls = {
 
 let square: Square;
 let screenQuad: ScreenQuad;
+let tree: Mesh;
 let time: number = 0.0;
 
 function loadScene() {
   square = new Square();
   square.create();
+
   screenQuad = new ScreenQuad();
   screenQuad.create();
+
+  // TODO: Conditionally set mesh based on rng
+    // let obj0 : string;
+    // let rand : number = Math.random();
+    // if (rand < 1.0 / 4096.0) { readTextFile(shiny); }
+  let obj0 : string = readTextFile('../resources/trees.obj');
+  tree = new Mesh(obj0, vec3.fromValues(0, 0, 0));
+  tree.create();
 
   // Set up instanced rendering data arrays here.
   // This example creates a set of positional
@@ -47,6 +59,9 @@ function loadScene() {
   let colors: Float32Array = new Float32Array(colorsArray);
   square.setInstanceVBOs(offsets, colors);
   square.setNumInstances(n * n); // grid of "particles"
+  
+  tree.setInstanceVBOs(offsets, colors);
+  tree.setNumInstances(1);
 }
 
 function main() {
@@ -74,12 +89,13 @@ function main() {
   // Initial call to load scene
   loadScene();
 
-  const camera = new Camera(vec3.fromValues(50, 50, 10), vec3.fromValues(50, 50, 0));
+  const camera = new Camera(vec3.fromValues(10, 10, 10), vec3.fromValues(0, 0, 0));
 
   const renderer = new OpenGLRenderer(canvas);
   renderer.setClearColor(0.2, 0.2, 0.2, 1);
-  gl.enable(gl.BLEND);
-  gl.blendFunc(gl.ONE, gl.ONE); // Additive blending
+  // gl.enable(gl.BLEND);
+  // gl.blendFunc(gl.ONE, gl.ONE); // Additive blending
+  gl.enable(gl.DEPTH_TEST);
 
   const instancedShader = new ShaderProgram([
     new Shader(gl.VERTEX_SHADER, require('./shaders/instanced-vert.glsl')),
@@ -101,7 +117,7 @@ function main() {
     renderer.clear();
     renderer.render(camera, flat, [screenQuad]);
     renderer.render(camera, instancedShader, [
-      square,
+      tree
     ]);
     stats.end();
 

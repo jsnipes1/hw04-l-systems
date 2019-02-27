@@ -2,66 +2,88 @@ import {vec3} from 'gl-matrix';
 import Turtle from 'Turtle';
 // import ExpansionRule from 'ExpansionRule';
 
+// CONCEPT: Sudowoodo
+    // TODO: Fill in draw rules with calls that will draw a mesh
+
 export default class LSystem {
     currState: Turtle;
     axiom: string;
     grammar: string;
+    depthLimit: number; // TODO: Set this through a dat.GUI input
     // expansion: Map<string, ExpansionRule>;
     drawRules: Map<string, any>;
 
-    constructor(ax : string) {
+    constructor(ax : string, lim: number) {
         this.currState = new Turtle(vec3.fromValues(0, 0, 0), vec3.fromValues(0, 90, 0));
         this.axiom = ax;
         this.grammar = '';
+        this.depthLimit = lim;
 
         this.drawRules = new Map();
         this.drawRules.set('F', this.currState.moveForward.bind(this.currState));
-
+        this.drawRules.set('X', this.currState.drawFlower.bind(this.currState));
+        this.drawRules.set('+', this.currState.rotatePos.bind(this.currState));
+        this.drawRules.set('-', this.currState.rotateNeg.bind(this.currState));
+        this.drawRules.set('[', this.currState.saveState.bind(this.currState));
+        this.drawRules.set(']', this.currState.restoreState.bind(this.currState));
     }
 
-    expand(depth : number) {
-        if (depth >= this.axiom.length) {
+    // Appropriately expand the grammar; first call should be expand(0, this.axiom)
+    expand(depth : number, expanded : string) {
+        // Stop after a certain recursion depth is reached and set the member variable
+        if (depth > this.depthLimit) {
+            this.grammar = expanded;
             return;
         }
 
-        // Get current string character
-        let currChar : string = this.axiom.charAt(depth);
+        // Create a new string to store the expansion of the current input
+        let newStr : string = '';
 
-        // Generate random number
-        let rand : number = Math.random();
-
-        switch (currChar) {
-            case 'F': {
-                if (rand < 0.5) {
-                    this.axiom.concat('FF');
+        // Loop over all characters in the input string and add them to the new one
+        for (var i = 0; i < expanded.length; ++i) {
+            let currChar : string = expanded.charAt(i);
+            let rand : number = Math.random();
+            switch (currChar) {
+                case 'F': {
+                    if (rand < 0.5) {
+                        newStr.concat('FF');
+                    }
+                    else {
+                        newStr.concat('FX');
+                    }
+                    break;
                 }
-                else {
-                    this.axiom.concat('FX');
+                case 'X': {
+                    if (rand < 0.33) {
+                        newStr.concat('[X+F[+FX]]');
+                    }
+                    else if (rand < 0.67) {
+                        newStr.concat('XFX');
+                    }
+                    else {
+                        newStr.concat('FFX');
+                    }
+                    break;
                 }
-                break;
-            }
-            case 'X': {
-                if (rand < 0.33) {
-                    this.axiom.concat('[X+F[+FX]]');
+                default: {
+                    break;
                 }
-                else if (rand < 0.67) {
-                    this.axiom.concat('XFX');
-                }
-                else {
-                    this.axiom.concat('FFX');
-                }
-                break;
-            }
-            default: {
-                break;
             }
         }
 
         // Recursively expand the grammar
-        this.expand(depth + 1);
+        this.expand(depth + 1, newStr);
     }
 
+    // Iterating over the string; get the current character, find the corresponding drawing
+    // rule, and call the function
     draw() {
-
+        for (var i = 0; i < this.grammar.length; ++i) {
+            let curr : string = this.grammar.charAt(i);
+            let func = this.drawRules.get(curr);
+            if (func) {
+                func();
+            }
+        }
     }
 }
