@@ -1,4 +1,4 @@
-import {vec3} from 'gl-matrix';
+import {vec3, mat4} from 'gl-matrix';
 import * as Stats from 'stats-js';
 import * as DAT from 'dat-gui';
 import Square from './geometry/Square';
@@ -9,17 +9,20 @@ import {setGL} from './globals';
 import ShaderProgram, {Shader} from './rendering/gl/ShaderProgram';
 import {readTextFile} from './globals';
 import Mesh from './geometry/Mesh';
-// import LSystem from 'LSystem';
+import LSystem from './LSystem';
 
 // Define an object with application parameters and button callbacks
 // This will be referred to by dat.GUI's functions that add GUI elements.
 const controls = {
+  axiom: 'FF[+F][-F][+F]X',
+  expansionDepth: 3,
+  angle: 135.0
 };
 
 let square: Square;
 let screenQuad: ScreenQuad;
 let cyl: Mesh;
-// let tree: LSystem;
+let tree: LSystem;
 let time: number = 0.0;
 
 function loadScene() {
@@ -39,7 +42,9 @@ function loadScene() {
     // bean = new Mesh(obj1, vec3.fromValues(0, 0, 0));
     // bean.create();
 
-  // tree = new LSystem('FF[+F][-F][+F]X', 3);
+  tree = new LSystem('FF[+F][-F][+F]X', 3);
+  let branches : mat4[] = tree.drawBranch();
+  let leaves : mat4[] = tree.drawLeaf();
 
   // Set up instanced rendering data arrays here.
   // This example creates a set of positional
@@ -81,6 +86,9 @@ function main() {
 
   // Add controls to the gui
   const gui = new DAT.GUI();
+  gui.add(controls, 'axiom');
+  gui.add(controls, 'expansionDepth', 0, 5).step(1);
+  gui.add(controls, 'angle', 20.0, 150.0).step(0.5);
 
   // get canvas and webgl context
   const canvas = <HTMLCanvasElement> document.getElementById('canvas');
