@@ -1,18 +1,21 @@
 import {vec3} from 'gl-matrix';
 import Turtle from 'Turtle';
-// import ExpansionRule from 'ExpansionRule';
+import {readTextFile} from 'globals';
+import Mesh from './geometry/Mesh';
 
-// CONCEPT: Sudowoodo
+// CONCEPT: Jellybean tree
     // TODO: Fill in draw rules with calls that will draw a mesh
-
+    // Not sure how to connect each mesh, the draw rules functions, and passing to GPU
 export default class LSystem {
     currState: Turtle;
     axiom: string;
     grammar: string;
-    depthLimit: number; // TODO: Set this through a dat.GUI input
-    // expansion: Map<string, ExpansionRule>;
+    depthLimit: number;
     drawRules: Map<string, any>;
+    branch: Mesh;
+    leaf: Mesh;
 
+    // TODO: Set axiom and depthLimit through dat.GUI input
     constructor(ax : string, lim: number) {
         this.currState = new Turtle(vec3.fromValues(0, 0, 0), vec3.fromValues(0, 90, 0));
         this.axiom = ax;
@@ -26,9 +29,21 @@ export default class LSystem {
         this.drawRules.set('-', this.currState.rotateNeg.bind(this.currState));
         this.drawRules.set('[', this.currState.saveState.bind(this.currState));
         this.drawRules.set(']', this.currState.restoreState.bind(this.currState));
+
+        let obj0 : string = readTextFile('../resources/cylinder.obj');
+        this.branch = new Mesh(obj0, vec3.fromValues(0, 0, 0));
+        // this.branch.create();?
+
+        // TODO -- make jellybean
+        // let obj1 : string = readTextFile('../resources/jellybean.obj');
+        // this.leaf = new Mesh(obj1, vec3.fromValues(0, 0, 0));
+        // this.leaf.create();?
+
+        // Immediately expand the grammar
+        this.expand(0, this.axiom);
     }
 
-    // Appropriately expand the grammar; first call should be expand(0, this.axiom)
+    // Appropriately expand the grammar
     expand(depth : number, expanded : string) {
         // Stop after a certain recursion depth is reached and set the member variable
         if (depth > this.depthLimit) {
@@ -45,7 +60,7 @@ export default class LSystem {
             let rand : number = Math.random();
             switch (currChar) {
                 case 'F': {
-                    if (rand < 0.5) {
+                    if (rand < 0.4) {
                         newStr.concat('FF');
                     }
                     else {
@@ -76,7 +91,7 @@ export default class LSystem {
     }
 
     // Iterating over the string; get the current character, find the corresponding drawing
-    // rule, and call the function
+    // rule, and call the associated function
     draw() {
         for (var i = 0; i < this.grammar.length; ++i) {
             let curr : string = this.grammar.charAt(i);

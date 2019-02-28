@@ -7,8 +7,9 @@ import OpenGLRenderer from './rendering/gl/OpenGLRenderer';
 import Camera from './Camera';
 import {setGL} from './globals';
 import ShaderProgram, {Shader} from './rendering/gl/ShaderProgram';
-import {readTextFile} from './globals'
-import Mesh from './geometry/Mesh'
+import {readTextFile} from './globals';
+import Mesh from './geometry/Mesh';
+// import LSystem from 'LSystem';
 
 // Define an object with application parameters and button callbacks
 // This will be referred to by dat.GUI's functions that add GUI elements.
@@ -18,22 +19,27 @@ const controls = {
 let square: Square;
 let screenQuad: ScreenQuad;
 let cyl: Mesh;
+// let tree: LSystem;
 let time: number = 0.0;
 
 function loadScene() {
-  square = new Square();
-  square.create();
+  // square = new Square();
+  // square.create();
 
   screenQuad = new ScreenQuad();
   screenQuad.create();
 
-  // TODO: Conditionally set mesh based on rng
-    // let obj0 : string;
-    // let rand : number = Math.random();
-    // if (rand < 1.0 / 4096.0) { readTextFile(shiny); }
-  let obj0 : string = readTextFile('../resources/cylinder.obj');
-  cyl = new Mesh(obj0, vec3.fromValues(0, 0, 0));
-  cyl.create();
+  // MOVED TO LSYSTEM CLASS
+    let obj0 : string = readTextFile('../resources/cylinder.obj');
+    cyl = new Mesh(obj0, vec3.fromValues(0, 0, 0));
+    cyl.create();
+
+    // TODO -- make jellybean
+    // let obj1 : string = readTextFile('../resources/jellybean.obj');
+    // bean = new Mesh(obj1, vec3.fromValues(0, 0, 0));
+    // bean.create();
+
+  // tree = new LSystem('FF[+F][-F][+F]X', 3);
 
   // Set up instanced rendering data arrays here.
   // This example creates a set of positional
@@ -57,8 +63,8 @@ function loadScene() {
   }
   let offsets: Float32Array = new Float32Array(offsetsArray);
   let colors: Float32Array = new Float32Array(colorsArray);
-  square.setInstanceVBOs(offsets, colors);
-  square.setNumInstances(n * n); // grid of "particles"
+  // square.setInstanceVBOs(offsets, colors);
+  // square.setNumInstances(n * n); // grid of "particles"
   
   cyl.setInstanceVBOs(offsets, colors);
   cyl.setNumInstances(1);
