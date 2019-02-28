@@ -17,7 +17,7 @@ const controls = {
 
 let square: Square;
 let screenQuad: ScreenQuad;
-let tree: Mesh;
+let cyl: Mesh;
 let time: number = 0.0;
 
 function loadScene() {
@@ -31,9 +31,9 @@ function loadScene() {
     // let obj0 : string;
     // let rand : number = Math.random();
     // if (rand < 1.0 / 4096.0) { readTextFile(shiny); }
-  let obj0 : string = readTextFile('../resources/trees.obj');
-  tree = new Mesh(obj0, vec3.fromValues(0, 0, 0));
-  tree.create();
+  let obj0 : string = readTextFile('../resources/cylinder.obj');
+  cyl = new Mesh(obj0, vec3.fromValues(0, 0, 0));
+  cyl.create();
 
   // Set up instanced rendering data arrays here.
   // This example creates a set of positional
@@ -60,8 +60,8 @@ function loadScene() {
   square.setInstanceVBOs(offsets, colors);
   square.setNumInstances(n * n); // grid of "particles"
   
-  tree.setInstanceVBOs(offsets, colors);
-  tree.setNumInstances(1);
+  cyl.setInstanceVBOs(offsets, colors);
+  cyl.setNumInstances(1);
 }
 
 function main() {
@@ -117,7 +117,7 @@ function main() {
     renderer.clear();
     renderer.render(camera, flat, [screenQuad]);
     renderer.render(camera, instancedShader, [
-      tree
+      cyl
     ]);
     stats.end();
 
