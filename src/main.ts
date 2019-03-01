@@ -38,7 +38,7 @@ function loadScene() {
   screenQuad.create();
 
   let obj0 : string = readTextFile('../resources/cylinder.obj');
-  cyl = new Mesh(obj0, vec3.fromValues(0, 1, 0));
+  cyl = new Mesh(obj0, vec3.fromValues(0, 0, 0));
   cyl.create();
 
   // TODO -- make jellybean
@@ -48,7 +48,7 @@ function loadScene() {
 
   tree = new LSystem(controls.axiom, controls.expansionDepth, controls.angle);
   let branches : mat4[] = tree.drawBranch();
-  let leaves : mat4[] = tree.drawLeaf(); // TODO: ADD THIS!
+  let leaves : mat4[] = tree.drawLeaf();
 
   let bOffsetArr = [];
   let bRotArr = [];
@@ -100,31 +100,41 @@ function loadScene() {
     bColorArr.push(1.0); // Alpha
   }
 
-  // Set up instanced rendering data arrays here.
-  // This example creates a set of positional
-  // offsets and gradiated colors for a 100x100 grid
-  // of squares, even though the VBO data for just
-  // one square is actually passed to the GPU
-  // let offsetsArray = [];
-  // let colorsArray = [];
-  // let n: number = 100.0;
-  // for(let i = 0; i < n; i++) {
-  //   for(let j = 0; j < n; j++) {
-  //     offsetsArray.push(i);
-  //     offsetsArray.push(j);
-  //     offsetsArray.push(0);
+  let sOffsetArr = [];
+  let sRotArr = [];
+  let sScaleArr = [];
+  let sColorArr = [];
+  for (let i = 0; i < leaves.length; ++i) {
+    let curr : mat4 = leaves[i];
 
-  //     colorsArray.push(i / n);
-  //     colorsArray.push(j / n);
-  //     colorsArray.push(1.0);
-  //     colorsArray.push(1.0); // Alpha channel
-  //   }
-  // }
-  // let offsets: Float32Array = new Float32Array(offsetsArray);
-  // let colors: Float32Array = new Float32Array(colorsArray);
-  // square.setInstanceVBOs(offsets, colors);
-  // square.setNumInstances(n * n); // grid of "particles"
+    let t : vec3 = vec3.create(); 
+    mat4.getTranslation(t, curr);
+    vec3.scale(t, t, 0.008);
   
+    sOffsetArr.push(t[0]);
+    sOffsetArr.push(t[1]);
+    sOffsetArr.push(t[2]);
+
+    let r : quat = quat.create();
+    mat4.getRotation(r, curr);
+    sRotArr.push(r[0]);
+    sRotArr.push(r[1]);
+    sRotArr.push(r[2]);
+    sRotArr.push(r[3]);
+
+    let s : vec3 = vec3.create();
+    mat4.getScaling(s, curr);
+    sScaleArr.push(s[0]);
+    sScaleArr.push(s[1]);
+    sScaleArr.push(s[2]);
+
+    sColorArr.push(Math.random());
+    sColorArr.push(Math.random());
+    sColorArr.push(Math.random());
+    sColorArr.push(1.0);
+  }
+
+  // Set up instanced rendering data arrays here.
   let bOffsets : Float32Array = new Float32Array(bOffsetArr);
   let bRots : Float32Array = new Float32Array(bRotArr);
   let bScales : Float32Array = new Float32Array(bScaleArr);
@@ -136,9 +146,12 @@ function loadScene() {
   cyl.setInstanceVBOs(bOffsets, bRots, bScales, bColors);
   cyl.setNumInstances(branches.length);
 
-  // let sOffsets : Float32Array = new Float32Array(sOffsetArr);
-  // sph.setInstanceVBOs(sOffsets, sColors);
-  // sph.setNumInstances(leaves.length);
+  let sOffsets : Float32Array = new Float32Array(sOffsetArr);
+  let sRots : Float32Array = new Float32Array(sRotArr);
+  let sScales : Float32Array = new Float32Array(sScaleArr);
+  let sColors : Float32Array = new Float32Array(sColorArr);
+  bean.setInstanceVBOs(sOffsets, sRots, sScales, sColors);
+  bean.setNumInstances(leaves.length);
 }
 
 function main() {
@@ -174,7 +187,7 @@ function main() {
   const renderer = new OpenGLRenderer(canvas);
   renderer.setClearColor(0.2, 0.2, 0.2, 1);
   // gl.enable(gl.BLEND);
-  gl.blendFunc(gl.ONE, gl.ONE); // Additive blending
+  // gl.blendFunc(gl.ONE, gl.ONE); // Additive blending
   gl.enable(gl.DEPTH_TEST);
 
   const instancedShader = new ShaderProgram([
@@ -203,7 +216,7 @@ function main() {
     renderer.clear();
     renderer.render(camera, flat, [screenQuad]);
     renderer.render(camera, instancedShader, [
-      cyl
+      cyl, bean
     ]);
     stats.end();
 

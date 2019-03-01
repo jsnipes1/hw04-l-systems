@@ -4,8 +4,7 @@ import Turtle from './Turtle';
 // Questions
     // Something is wrong with my transformations
         // Rotation about local center
-        // Translations spread out as you go further
-    // This thing doesn't branch
+        // Translations spread out as you go further?
     // Shading?
 
 export default class LSystem {
@@ -51,22 +50,22 @@ export default class LSystem {
             switch (currChar) {
                 case 'F': {
                     if (rand < 0.4) {
-                        newStr = newStr.concat('F[F[F+XF]+FX]X');
+                        newStr = newStr.concat('FX[X[FX+X]+FX]X');
                     }
                     else {
-                        newStr = newStr.concat('X[F[+XF]F]X');
+                        newStr = newStr.concat('X[FX[+XF]]X');
                     }
                     break;
                 }
                 case '+': {
                     if (rand < 0.33) {
-                        newStr = newStr.concat('[X+F[-FX]]');
+                        newStr = newStr.concat('[X+F[-FXX]]');
                     }
                     else if (rand < 0.67) {
-                        newStr = newStr.concat('FX');
+                        newStr = newStr.concat('XFX');
                     }
                     else {
-                        newStr = newStr.concat('F[XF[+FXF]XF]+FX');
+                        newStr = newStr.concat('[XFX[+FFX]XF]+FX');
                     }
                     break;
                 }
@@ -104,10 +103,11 @@ export default class LSystem {
             let curr : string = this.grammar.charAt(i);
             let func = this.drawRules.get(curr);
             if (func) {
-                let m : mat4 = func();
+               
                 if (curr != 'X') {
                     continue;
                 }
+                let m : mat4 = func();
                 transfs.push(m);
             }
         }
