@@ -1,20 +1,17 @@
 import {vec3, mat4} from 'gl-matrix';
 import Turtle from './Turtle';
-import {readTextFile} from './globals';
-import Mesh from './geometry/Mesh';
 
 // CONCEPT: Jellybean tree
-    // TODO: Fill in draw rules with calls that will draw a mesh
-    // Not sure how to connect each mesh, the draw rules functions, and passing to GPU
-    // Also not sure how to get dat.GUI inputs to function
+    // Questions
+        // Something is wrong with my transformations!
+        // Shading?
+
 export default class LSystem {
     currState: Turtle;
     axiom: string;
     grammar: string;
     depthLimit: number;
     drawRules: Map<string, any>;
-    branch: Mesh;
-    leaf: Mesh;
 
     // TODO: Set axiom and depthLimit through dat.GUI input
     // How do we connect them to the system itself?
@@ -63,7 +60,7 @@ export default class LSystem {
                 }
                 case 'X': {
                     if (rand < 0.33) {
-                        newStr = newStr.concat('[X+F[+FX]]');
+                        newStr = newStr.concat('[X+F[-FX]]');
                     }
                     else if (rand < 0.67) {
                         newStr = newStr.concat('XFX');

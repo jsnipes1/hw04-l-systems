@@ -14,11 +14,6 @@ class Mesh extends Drawable {
   scale: Float32Array;
   center: vec4;
 
-  // bufRot: WebGLBuffer;
-  // rotGenerated: boolean;
-  // bufScale: WebGLBuffer;
-  // scaleGenerated: boolean;
-
   objString: string;
 
   constructor(objString: string, center: vec3) {

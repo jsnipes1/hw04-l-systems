@@ -25,6 +25,10 @@ let cyl: Mesh;
 let tree: LSystem;
 let time: number = 0.0;
 
+let currAxiom : string = 'FF[+F][-F][+F]X';
+let currDepth : number = 3;
+let currAngle : number = 135.0;
+
 function loadScene() {
   // square = new Square();
   // square.create();
@@ -41,11 +45,9 @@ function loadScene() {
     // bean = new Mesh(obj1, vec3.fromValues(0, 0, 0));
     // bean.create();
 
-  tree = new LSystem('FF[+F][-F][+F]X', 2);
+  tree = new LSystem(controls.axiom, controls.expansionDepth);
   let branches : mat4[] = tree.drawBranch();
   let leaves : mat4[] = tree.drawLeaf();
-
-  console.log(branches.length);
 
   let bOffsetArr = [];
   let bRotArr = [];
@@ -53,7 +55,6 @@ function loadScene() {
   let bColorArr = [];
   for (var i = 0; i < branches.length; ++i) {
     let curr : mat4 = branches[i];
-    // let p : vec4 = curr * vec4.fromValues(0, 0, 0, 1); // Matrix-vector mult??
 
     let t : vec3 = vec3.create(); 
     mat4.getTranslation(t, curr);
@@ -75,7 +76,11 @@ function loadScene() {
     bScaleArr.push(s[0]);
     bScaleArr.push(s[1]);
     bScaleArr.push(s[2]);
-    
+
+    bColorArr.push(0.6471);
+    bColorArr.push(0.6471);
+    bColorArr.push(0.6471);
+    bColorArr.push(2.0); // Alpha
   }
 
   // Set up instanced rendering data arrays here.
@@ -83,30 +88,31 @@ function loadScene() {
   // offsets and gradiated colors for a 100x100 grid
   // of squares, even though the VBO data for just
   // one square is actually passed to the GPU
-  let offsetsArray = [];
-  let colorsArray = [];
-  let n: number = 100.0;
-  for(let i = 0; i < n; i++) {
-    for(let j = 0; j < n; j++) {
-      offsetsArray.push(i);
-      offsetsArray.push(j);
-      offsetsArray.push(0);
+  // let offsetsArray = [];
+  // let colorsArray = [];
+  // let n: number = 100.0;
+  // for(let i = 0; i < n; i++) {
+  //   for(let j = 0; j < n; j++) {
+  //     offsetsArray.push(i);
+  //     offsetsArray.push(j);
+  //     offsetsArray.push(0);
 
-      colorsArray.push(i / n);
-      colorsArray.push(j / n);
-      colorsArray.push(1.0);
-      colorsArray.push(1.0); // Alpha channel
-    }
-  }
+  //     colorsArray.push(i / n);
+  //     colorsArray.push(j / n);
+  //     colorsArray.push(1.0);
+  //     colorsArray.push(1.0); // Alpha channel
+  //   }
+  // }
   // let offsets: Float32Array = new Float32Array(offsetsArray);
-  let colors: Float32Array = new Float32Array(colorsArray);
+  // let colors: Float32Array = new Float32Array(colorsArray);
   // square.setInstanceVBOs(offsets, colors);
   // square.setNumInstances(n * n); // grid of "particles"
   
   let bOffsets : Float32Array = new Float32Array(bOffsetArr);
   let bRots : Float32Array = new Float32Array(bRotArr);
   let bScales : Float32Array = new Float32Array(bScaleArr);
-  cyl.setInstanceVBOs(bOffsets, bRots, bScales, colors);
+  let bColors : Float32Array = new Float32Array(bColorArr);
+  cyl.setInstanceVBOs(bOffsets, bRots, bScales, bColors);
   cyl.setNumInstances(branches.length);
 
   // let sOffsets : Float32Array = new Float32Array(sOffsetArr);
@@ -147,7 +153,7 @@ function main() {
   const renderer = new OpenGLRenderer(canvas);
   renderer.setClearColor(0.2, 0.2, 0.2, 1);
   // gl.enable(gl.BLEND);
-  // gl.blendFunc(gl.ONE, gl.ONE); // Additive blending
+  gl.blendFunc(gl.ONE, gl.ONE); // Additive blending
   gl.enable(gl.DEPTH_TEST);
 
   const instancedShader = new ShaderProgram([
@@ -162,6 +168,12 @@ function main() {
 
   // This function will be called every frame
   function tick() {
+    if (controls.axiom != currAxiom || controls.expansionDepth != currDepth || controls.angle != currAngle) {
+      currAxiom = controls.axiom;
+      currDepth = controls.expansionDepth;
+      currAngle = controls.angle;
+      loadScene();
+    }
     camera.update();
     stats.begin();
     instancedShader.setTime(time);

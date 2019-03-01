@@ -23,16 +23,19 @@ void main()
     fs_Pos = vs_Pos;
 
     vec3 offset = vs_Translate;
+
     vec4 q = vs_Rotate;
     float s = 1.0 / (length(q) * length(q));
     mat3 r = mat3(1.0 - 2.0 * s * (q[1] * q[1] + q[2] * q[2]), 2.0 * s * (q[0] * q[1] + q[2] * q[3]), 2.0 * s * (q[0] * q[2] - q[1] * q[3]),
                   2.0 * s * (q[0] * q[1] - q[2] * q[3]), 1.0 - 2.0 * s * (q[0] * q[0] + q[2] * q[2]), 2.0 * s * (q[1] * q[2] + q[0] * q[3]),
                   2.0 * s * (q[0] * q[2] + q[1] * q[3]), 2.0 * s * (q[1] * q[2] - q[0] * q[3]), 1.0 - 2.0 * s * (q[0] * q[0] + q[1] * q[1]));
+    
     mat3 sc = mat3(1.0);
     sc[0][0] *= vs_Scale[0];
     sc[1][1] *= vs_Scale[1];
     sc[2][2] *= vs_Scale[2];
-    offset = sc * r * offset;
+
+    offset = sc * (r * vs_Pos.xyz + offset);
     // offset.z = (sin((u_Time + offset.x) * 3.14159 * 0.1) + cos((u_Time + offset.y) * 3.14159 * 0.1)) * 1.5;
 
     // vec3 billboardPos = offset + vs_Pos.x * u_CameraAxes[0] + vs_Pos.y * u_CameraAxes[1];
