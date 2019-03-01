@@ -37,12 +37,11 @@ function loadScene() {
   screenQuad = new ScreenQuad();
   screenQuad.create();
 
-  let obj0 : string = readTextFile('../resources/cylinder.obj');
+  let obj0 : string = readTextFile('https://raw.githubusercontent.com/jsnipes1/hw04-l-systems/master/resources/cylinder.obj');
   cyl = new Mesh(obj0, vec3.fromValues(0, 0, 0));
   cyl.create();
 
-  // TODO -- make jellybean
-  let obj1 : string = readTextFile('../resources/sphere.obj');
+  let obj1 : string = readTextFile('https://raw.githubusercontent.com/jsnipes1/hw04-l-systems/master/resources/sphere.obj');
   bean = new Mesh(obj1, vec3.fromValues(0, 0, 0));
   bean.create();
 
