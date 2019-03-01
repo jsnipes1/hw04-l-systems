@@ -4,12 +4,12 @@ Jake Snipes
 PennKey: jsnipes
 
 ## Images
-<...>
+<img src="img/basic.PNG">
 
 An L-System with no visible ornamentations
 
 
-<...>
+<img src="img/ornament.PNG">
 
 A system with one visible ornamentation; I had a lot of trouble getting these to show frequently.
 
@@ -33,6 +33,7 @@ The modifiable GUI inputs are as follows:
 - Angle: The maximum angle at which branches will separate.
 
 ## Live Demo
+https://jacobsnipes.com/hw04-l-systems
 
 ## Resources Used
 I used no resources outside of my previous code from this class, TAs, and documentation.
