@@ -6081,11 +6081,10 @@ function loadScene() {
     // square.create();
     screenQuad = new __WEBPACK_IMPORTED_MODULE_3__geometry_ScreenQuad__["a" /* default */]();
     screenQuad.create();
-    let obj0 = Object(__WEBPACK_IMPORTED_MODULE_6__globals__["b" /* readTextFile */])('../resources/cylinder.obj');
+    let obj0 = Object(__WEBPACK_IMPORTED_MODULE_6__globals__["b" /* readTextFile */])('https://raw.githubusercontent.com/jsnipes1/hw04-l-systems/master/resources/cylinder.obj');
     cyl = new __WEBPACK_IMPORTED_MODULE_8__geometry_Mesh__["a" /* default */](obj0, __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["d" /* vec3 */].fromValues(0, 0, 0));
     cyl.create();
-    // TODO -- make jellybean
-    let obj1 = Object(__WEBPACK_IMPORTED_MODULE_6__globals__["b" /* readTextFile */])('../resources/sphere.obj');
+    let obj1 = Object(__WEBPACK_IMPORTED_MODULE_6__globals__["b" /* readTextFile */])('https://raw.githubusercontent.com/jsnipes1/hw04-l-systems/master/resources/sphere.obj');
     bean = new __WEBPACK_IMPORTED_MODULE_8__geometry_Mesh__["a" /* default */](obj1, __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["d" /* vec3 */].fromValues(0, 0, 0));
     bean.create();
     tree = new __WEBPACK_IMPORTED_MODULE_9__LSystem__["a" /* default */](controls.axiom, controls.expansionDepth, controls.angle);
