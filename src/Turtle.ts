@@ -17,23 +17,23 @@ export default class Turtle {
 
     // Drawing functions, including probabilistic functionality
     moveForward() : mat4 {
-        let s : number = 1.0 / (this.recDepth + 1.0);
+        let s : number = 1;//1.0 / (this.recDepth + 1.0);
         let m : mat4 = mat4.create();
-        let q : quat;
+        let q : quat = quat.create();
         quat.rotationTo(q, this.orient, this.worldUp);
 
-        let o : vec3;
-        vec3.scale(o, this.orient, 10.0);
+        let o : vec3 = vec3.create();
+        vec3.scale(o, this.orient, 1.0);
         vec3.add(this.position, this.position, o);
 
-        mat4.fromRotationTranslationScale(m, q, this.position, vec3.fromValues(0.8, s, 0.8));
+        mat4.fromRotationTranslationScale(m, q, this.position, vec3.fromValues(1, s, 1));
         return m;
     }
 
     drawFlower() : mat4 {
         let s : number = 1.0 / (this.recDepth + 1.0);
         let m : mat4 = mat4.create();
-        let q : quat;
+        let q : quat = quat.create();
         quat.rotationTo(q, this.orient, this.worldUp);
         mat4.fromRotationTranslationScale(m, q, this.position, vec3.fromValues(s, s, s));
         return m;

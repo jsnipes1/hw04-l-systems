@@ -32,13 +32,13 @@ export default class LSystem {
         this.drawRules.set('[', this.currState.saveState.bind(this.currState));
         this.drawRules.set(']', this.currState.restoreState.bind(this.currState));
 
-        let obj0 : string = readTextFile('../resources/cylinder.obj');
-        this.branch = new Mesh(obj0, vec3.fromValues(0, 0, 0));
+        // let obj0 : string = readTextFile('../resources/cylinder.obj');
+        // this.branch = new Mesh(obj0, vec3.fromValues(0, 0, 0));
         // this.branch.create();?
 
         // TODO -- make jellybean
-        let obj1 : string = readTextFile('../resources/sphere.obj');
-        this.leaf = new Mesh(obj1, vec3.fromValues(0, 0, 0));
+        // let obj1 : string = readTextFile('../resources/sphere.obj');
+        // this.leaf = new Mesh(obj1, vec3.fromValues(0, 0, 0));
         // this.leaf.create();?
 
         // Immediately expand the grammar
@@ -63,22 +63,22 @@ export default class LSystem {
             switch (currChar) {
                 case 'F': {
                     if (rand < 0.4) {
-                        newStr.concat('FF');
+                        newStr = newStr.concat('FF');
                     }
                     else {
-                        newStr.concat('FX');
+                        newStr = newStr.concat('FX');
                     }
                     break;
                 }
                 case 'X': {
                     if (rand < 0.33) {
-                        newStr.concat('[X+F[+FX]]');
+                        newStr = newStr.concat('[X+F[+FX]]');
                     }
                     else if (rand < 0.67) {
-                        newStr.concat('XFX');
+                        newStr = newStr.concat('XFX');
                     }
                     else {
-                        newStr.concat('FFX');
+                        newStr = newStr.concat('FFX');
                     }
                     break;
                 }
@@ -95,7 +95,7 @@ export default class LSystem {
     // Iterating over the string; get the current character, find the corresponding drawing
     // rule, and call the associated function
     drawBranch() : mat4[] {
-        let transfs : mat4[];
+        let transfs : mat4[] = [];
         for (var i = 0; i < this.grammar.length; ++i) {
             let curr : string = this.grammar.charAt(i);
             let func = this.drawRules.get(curr);
@@ -111,11 +111,12 @@ export default class LSystem {
     }
 
     drawLeaf() : mat4[] {
-        let transfs : mat4[];
+        let transfs : mat4[] = [];
         for (var i = 0; i < this.grammar.length; ++i) {
             let curr : string = this.grammar.charAt(i);
             let func = this.drawRules.get(curr);
             if (func) {
+                // Put this statement here to avoid double-drawing branches
                 if (curr != 'X') {
                     continue;
                 }

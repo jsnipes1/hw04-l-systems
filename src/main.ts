@@ -1,4 +1,4 @@
-import {vec3, mat4} from 'gl-matrix';
+import {vec3, vec4, mat4, quat} from 'gl-matrix';
 import * as Stats from 'stats-js';
 import * as DAT from 'dat-gui';
 import Square from './geometry/Square';
@@ -34,7 +34,7 @@ function loadScene() {
 
   // MOVED TO LSYSTEM CLASS
     let obj0 : string = readTextFile('../resources/cylinder.obj');
-    cyl = new Mesh(obj0, vec3.fromValues(0, 0, 0));
+    cyl = new Mesh(obj0, vec3.fromValues(0, 1, 0));
     cyl.create();
 
     // TODO -- make jellybean
@@ -45,6 +45,26 @@ function loadScene() {
   tree = new LSystem('FF[+F][-F][+F]X', 3);
   let branches : mat4[] = tree.drawBranch();
   let leaves : mat4[] = tree.drawLeaf();
+
+  console.log(branches.length);
+
+  let bOffsetArr = [];
+  let bColorArr = [];
+  for (var i = 0; i < branches.length; ++i) {
+    let curr : mat4 = branches[i];
+    // let p : vec4 = curr * vec4.fromValues(0, 0, 0, 1); // Matrix-vector mult??
+
+    let t : vec3 = vec3.create(); 
+    mat4.getTranslation(t, curr);
+    vec3.scale(t, t, 0.001);
+  
+    bOffsetArr.push(t[0]);
+    bOffsetArr.push(t[1]);
+    bOffsetArr.push(t[2]);
+
+    let r : quat = quat.create();
+    mat4.getRotation(r, curr);
+  }
 
   // Set up instanced rendering data arrays here.
   // This example creates a set of positional
@@ -66,13 +86,18 @@ function loadScene() {
       colorsArray.push(1.0); // Alpha channel
     }
   }
-  let offsets: Float32Array = new Float32Array(offsetsArray);
+  // let offsets: Float32Array = new Float32Array(offsetsArray);
   let colors: Float32Array = new Float32Array(colorsArray);
   // square.setInstanceVBOs(offsets, colors);
   // square.setNumInstances(n * n); // grid of "particles"
   
-  cyl.setInstanceVBOs(offsets, colors);
-  cyl.setNumInstances(1);
+  let bOffsets : Float32Array = new Float32Array(bOffsetArr);
+  cyl.setInstanceVBOs(bOffsets, colors);
+  cyl.setNumInstances(branches.length);
+
+  // let sOffsets : Float32Array = new Float32Array(sOffsetArr);
+  // sph.setInstanceVBOs(sOffsets, sColors);
+  // sph.setNumInstances(leaves.length);
 }
 
 function main() {
