@@ -22,6 +22,7 @@ const controls = {
 let square: Square;
 let screenQuad: ScreenQuad;
 let cyl: Mesh;
+let bean: Mesh;
 let tree: LSystem;
 let time: number = 0.0;
 
@@ -40,21 +41,37 @@ function loadScene() {
   cyl = new Mesh(obj0, vec3.fromValues(0, 1, 0));
   cyl.create();
 
-    // TODO -- make jellybean
-    // let obj1 : string = readTextFile('../resources/jellybean.obj');
-    // bean = new Mesh(obj1, vec3.fromValues(0, 0, 0));
-    // bean.create();
+  // TODO -- make jellybean
+  let obj1 : string = readTextFile('../resources/sphere.obj');
+  bean = new Mesh(obj1, vec3.fromValues(0, 0, 0));
+  bean.create();
 
-  tree = new LSystem(controls.axiom, controls.expansionDepth);
+  tree = new LSystem(controls.axiom, controls.expansionDepth, controls.angle);
   let branches : mat4[] = tree.drawBranch();
-  let leaves : mat4[] = tree.drawLeaf();
+  let leaves : mat4[] = tree.drawLeaf(); // TODO: ADD THIS!
 
   let bOffsetArr = [];
   let bRotArr = [];
   let bScaleArr = [];
   let bColorArr = [];
+  // let col1 = [];
+  // let col2 = [];
+  // let col3 = [];
+  // let col4 = [];
   for (var i = 0; i < branches.length; ++i) {
     let curr : mat4 = branches[i];
+
+    // let c1 : vec4 = curr[0];
+    // let c2 : vec4 = curr[1];
+    // let c3 : vec4 = curr[2];
+    // let c4 : vec4 = curr[3];
+
+    // for (let i = 0; i < 4; ++i) {
+    //   col1.push(c1[i]);
+    //   col2.push(c2[i]);
+    //   col3.push(c3[i]);
+    //   col4.push(c4[i]);
+    // }
 
     let t : vec3 = vec3.create(); 
     mat4.getTranslation(t, curr);
@@ -77,10 +94,10 @@ function loadScene() {
     bScaleArr.push(s[1]);
     bScaleArr.push(s[2]);
 
-    bColorArr.push(0.6471);
-    bColorArr.push(0.6471);
-    bColorArr.push(0.6471);
-    bColorArr.push(2.0); // Alpha
+    bColorArr.push(1.0);
+    bColorArr.push(1.0);
+    bColorArr.push(1.0);
+    bColorArr.push(1.0); // Alpha
   }
 
   // Set up instanced rendering data arrays here.
@@ -111,6 +128,10 @@ function loadScene() {
   let bOffsets : Float32Array = new Float32Array(bOffsetArr);
   let bRots : Float32Array = new Float32Array(bRotArr);
   let bScales : Float32Array = new Float32Array(bScaleArr);
+  // let b1 : Float32Array = new Float32Array(col1);
+  // let b2 : Float32Array = new Float32Array(col2);
+  // let b3 : Float32Array = new Float32Array(col3);
+  // let b4 : Float32Array = new Float32Array(col4);
   let bColors : Float32Array = new Float32Array(bColorArr);
   cyl.setInstanceVBOs(bOffsets, bRots, bScales, bColors);
   cyl.setNumInstances(branches.length);

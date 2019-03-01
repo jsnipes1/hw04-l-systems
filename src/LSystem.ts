@@ -1,10 +1,12 @@
 import {vec3, mat4} from 'gl-matrix';
 import Turtle from './Turtle';
 
-// CONCEPT: Jellybean tree
-    // Questions
-        // Something is wrong with my transformations!
-        // Shading?
+// Questions
+    // Something is wrong with my transformations
+        // Rotation about local center
+        // Translations spread out as you go further
+    // This thing doesn't branch
+    // Shading?
 
 export default class LSystem {
     currState: Turtle;
@@ -13,10 +15,8 @@ export default class LSystem {
     depthLimit: number;
     drawRules: Map<string, any>;
 
-    // TODO: Set axiom and depthLimit through dat.GUI input
-    // How do we connect them to the system itself?
-    constructor(ax : string, lim: number) {
-        this.currState = new Turtle(vec3.fromValues(0, 0, 0), vec3.fromValues(0, 90, 0));
+    constructor(ax : string, lim: number, angle: number) {
+        this.currState = new Turtle(vec3.fromValues(0, 0, 0), vec3.fromValues(0, 90, 0), angle);
         this.axiom = ax;
         this.grammar = '';
         this.depthLimit = lim;
@@ -51,22 +51,22 @@ export default class LSystem {
             switch (currChar) {
                 case 'F': {
                     if (rand < 0.4) {
-                        newStr = newStr.concat('FF');
+                        newStr = newStr.concat('F[F[F+XF]+FX]X');
                     }
                     else {
-                        newStr = newStr.concat('FX');
+                        newStr = newStr.concat('X[F[+XF]F]X');
                     }
                     break;
                 }
-                case 'X': {
+                case '+': {
                     if (rand < 0.33) {
                         newStr = newStr.concat('[X+F[-FX]]');
                     }
                     else if (rand < 0.67) {
-                        newStr = newStr.concat('XFX');
+                        newStr = newStr.concat('FX');
                     }
                     else {
-                        newStr = newStr.concat('FFX');
+                        newStr = newStr.concat('F[XF[+FXF]XF]+FX');
                     }
                     break;
                 }
@@ -104,11 +104,10 @@ export default class LSystem {
             let curr : string = this.grammar.charAt(i);
             let func = this.drawRules.get(curr);
             if (func) {
-                // Put this statement here to avoid double-drawing branches
+                let m : mat4 = func();
                 if (curr != 'X') {
                     continue;
                 }
-                let m : mat4 = func();
                 transfs.push(m);
             }
         }

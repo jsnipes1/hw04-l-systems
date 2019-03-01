@@ -16,11 +16,13 @@ in vec3 vs_Scale;
 
 out vec4 fs_Col;
 out vec4 fs_Pos;
+out vec4 fs_Nor;
 
 void main()
 {
     fs_Col = vs_Col;
     fs_Pos = vs_Pos;
+    fs_Nor = vs_Nor;
 
     vec3 offset = vs_Translate;
 
