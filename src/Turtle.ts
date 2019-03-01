@@ -26,7 +26,7 @@ export default class Turtle {
         vec3.scale(o, this.orient, 1.0);
         vec3.add(this.position, this.position, o);
 
-        mat4.fromRotationTranslationScale(m, q, this.position, vec3.fromValues(1, s, 1));
+        mat4.fromRotationTranslationScale(m, q, this.position, vec3.fromValues(1, 1, 1));
         return m;
     }
 
@@ -46,17 +46,17 @@ export default class Turtle {
         mat4.identity(r);
         if (rand < 0.33) {
             vec3.rotateX(this.orient, this.orient, this.position, angle);
-            r = mat4.fromXRotation(r, angle);
+            mat4.fromXRotation(r, angle);
             return r;
         }
         else if (rand < 0.67) {
             vec3.rotateY(this.orient, this.orient, this.position, angle);
-            r = mat4.fromYRotation(r, angle);
+            mat4.fromYRotation(r, angle);
             return r;
         }
         else {
             vec3.rotateZ(this.orient, this.orient, this.position, angle);
-            r = mat4.fromZRotation(r, angle);
+            mat4.fromZRotation(r, angle);
             return r;
         }
     }
@@ -68,17 +68,17 @@ export default class Turtle {
         mat4.identity(r);
         if (rand < 0.33) {
             vec3.rotateX(this.orient, this.orient, this.position, angle);
-            r = mat4.fromXRotation(r, angle);
+            mat4.fromXRotation(r, angle);
             return r;
         }
         else if (rand < 0.67) {
             vec3.rotateY(this.orient, this.orient, this.position, angle);
-            r = mat4.fromYRotation(r, angle);
+            mat4.fromYRotation(r, angle);
             return r;
         }
         else {
             vec3.rotateZ(this.orient, this.orient, this.position, angle);
-            r = mat4.fromZRotation(r, angle);
+            mat4.fromZRotation(r, angle);
             return r;
         }
     }

@@ -32,15 +32,6 @@ export default class LSystem {
         this.drawRules.set('[', this.currState.saveState.bind(this.currState));
         this.drawRules.set(']', this.currState.restoreState.bind(this.currState));
 
-        // let obj0 : string = readTextFile('../resources/cylinder.obj');
-        // this.branch = new Mesh(obj0, vec3.fromValues(0, 0, 0));
-        // this.branch.create();?
-
-        // TODO -- make jellybean
-        // let obj1 : string = readTextFile('../resources/sphere.obj');
-        // this.leaf = new Mesh(obj1, vec3.fromValues(0, 0, 0));
-        // this.leaf.create();?
-
         // Immediately expand the grammar
         this.expand(0, this.axiom);
     }
